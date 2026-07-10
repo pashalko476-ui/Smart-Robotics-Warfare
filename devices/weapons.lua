@@ -2,6 +2,49 @@
 -- Параметры оружия для всех роботов
 local DamageSystem = require(path .. "/devices/damage_system")
 local Projectiles = require(path .. "/devices/projectiles")
+local MissileAI = require(path .. "/devices/missile_ai")
+local Projectiles = require(path .. "/devices/projectiles")
+
+function Weapons.FireMissile(robot, weaponName, projectileName, target)
+    local projectile = Projectiles[projectileName]
+    if not projectile then return end
+
+    -- создаём ракету
+    local missile = {
+        x = robot.x,
+        y = robot.y,
+        vx = robot.dirX,
+        vy = robot.dirY,
+        speed = projectile.speed or 400,
+        turnRate = projectile.turnRate or 0.5,
+        projectileName = projectileName,
+        energy = projectile.energy or 1.0,
+        inVoid = false,
+    }
+
+    -- обновление ракеты каждый тик
+    missile.Update = function(self, obstacles)
+        MissileAI.Update(self, target, obstacles)
+    end
+
+    -- обработка попадания
+    missile.OnHit = function(self, hitTarget)
+        MissileAI.OnHit(self, hitTarget)
+    end
+
+    return missile
+end
+
+function Weapons.Fire(robot, weaponName, target)
+    local weapon = Weapons[weaponName]
+    if not weapon then return end
+
+    if weapon.type == "missile" or weapon.type == "swarm" then
+        return Weapons.FireMissile(robot, weaponName, weapon.projectile, target)
+    end
+
+    -- обычные снаряды будут обрабатываться позже
+end
 
 function Weapons.ApplyDamage(weaponName, projectileName, target)
     local projectile = Projectiles[projectileName]
