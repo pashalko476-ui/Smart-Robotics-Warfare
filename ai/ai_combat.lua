@@ -4,6 +4,7 @@
 local Priority  = require(path .. "/ai/target_priority.lua")
 local Selector  = require(path .. "/ai/weapon_selector.lua")
 local Robots    = require(path .. "/devices/robot_definitions.lua")
+local Weapons = require(path .. "/devices/weapons")
 
 local CombatAI = {}
 
@@ -110,6 +111,14 @@ function CombatAI.Update(self, dt)
     -- 6. Стрельба всеми подходящими орудиями
     CombatAI.FireWeapons(self)
 end
+
+local damageResult = Weapons.ApplyDamage(weaponName, projectileName, target)
+
+if damageResult then
+    target:ApplyDamage(damageResult.damage)
+    target:ApplyImpulse(damageResult.impulse)
+end
+
 
 return CombatAI
 
