@@ -7,4 +7,13 @@ function CombatActions.OnProjectileHit(robot, weaponName, projectileName, target
         target:ApplyImpulse(result.impulse)
     end
 end
+function CombatActions.UpdateMissiles(robot, obstacles)
+    for _, missile in ipairs(robot.missiles or {}) do
+        missile:Update(obstacles)
+
+        if missile:CheckCollision() then
+            missile:OnHit(missile.target)
+        end
+    end
+end
 
