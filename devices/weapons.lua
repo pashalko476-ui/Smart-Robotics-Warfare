@@ -1,155 +1,291 @@
--- robot_definitions.lua
--- Основные характеристики всех роботов
+-- weapons.lua
+-- Параметры оружия для всех роботов
+local DamageSystem = require(path .. "/devices/damage_system")
+local Projectiles = require(path .. "/devices/projectiles")
 
-local Robots = {
+function Weapons.ApplyDamage(weaponName, projectileName, target)
+    local projectile = Projectiles[projectileName]
+    if not projectile then return end
 
-    ---------------------------------------------------------
-    -- TIER 1
-    ---------------------------------------------------------
-    worker_bot = {
-        tier = 1,
-        health = 120,
-        speed = 80,
-        mass = 1.0,
-        weapons = {},
-        role = "support",
-    },
+    return DamageSystem.OnHit(projectile, target)
+end
 
-    gunner = {
-        tier = 1,
-        health = 180,
-        speed = 90,
-        mass = 1.2,
-        weapons = { "minigun", "light_cannon" },
-        role = "ranged",
-    },
-
-    shield_breaker = {
-        tier = 1,
-        health = 160,
-        speed = 85,
-        mass = 1.3,
-        weapons = { "shield_piercer", "pulse_rifle" },
-        role = "anti_shield",
-    },
-
-    emp_saboteur = {
-        tier = 1,
-        health = 140,
-        speed = 95,
-        mass = 1.0,
-        weapons = { "emp_blast", "disruptor" },
-        role = "utility",
-    },
-
-    scout = {
-        tier = 1,
-        health = 110,
-        speed = 120,
-        mass = 0.8,
-        weapons = { "scout_rifle" },
-        role = "recon",
-    },
-
-    kamikaze = {
-        tier = 1,
-        health = 100,
-        speed = 130,
-        mass = 0.7,
-        weapons = { "explosive_core" },
-        role = "suicide",
-    },
+local Weapons = {
 
     ---------------------------------------------------------
-    -- TIER 2
+    -- ЛЁГКОЕ ОРУЖИЕ (TIER 1)
     ---------------------------------------------------------
-    hunter_striker = {
-        tier = 2,
-        health = 260,
-        speed = 100,
-        mass = 1.8,
-        weapons = { "striker_blades", "shotgun_burst" },
-        role = "melee",
+
+    minigun = {
+        type = "bullet",
+        damage = 6,
+        fireRate = 0.08,
+        range = 450,
+        projectile = "bullet_small",
+        accuracy = 0.92,
+        impulse = 0,
     },
 
-    phantom_strider = {
-        tier = 2,
-        health = 240,
-        speed = 110,
-        mass = 1.6,
-        weapons = { "phase_rifle", "ghost_missile" },
-        role = "stealth",
+    light_cannon = {
+        type = "shell",
+        damage = 25,
+        fireRate = 0.9,
+        range = 600,
+        projectile = "shell_light",
+        accuracy = 0.85,
+        impulse = 80,
     },
 
-    artillery_walker = {
-        tier = 2,
-        health = 300,
-        speed = 70,
-        mass = 2.5,
-        weapons = { "artillery_cannon", "cluster_launcher" },
-        role = "artillery",
+    shield_piercer = {
+        type = "beam",
+        damage = 12,
+        fireRate = 0.5,
+        range = 500,
+        projectile = "pierce_beam",
+        shieldDamage = 40,
+        impulse = 0,
     },
 
-    ---------------------------------------------------------
-    -- TIER 3
-    ---------------------------------------------------------
-    aegis_titan = {
-        tier = 3,
-        health = 600,
-        speed = 60,
-        mass = 4.0,
-        weapons = { "titan_shield", "heavy_laser" },
-        role = "tank",
+    pulse_rifle = {
+        type = "pulse",
+        damage = 18,
+        fireRate = 0.4,
+        range = 520,
+        projectile = "pulse_small",
+        impulse = 20,
     },
 
-    stormbringer = {
-        tier = 3,
-        health = 520,
-        speed = 80,
-        mass = 3.5,
-        weapons = { "storm_missiles", "arc_blaster" },
-        role = "aoe",
+    emp_blast = {
+        type = "emp",
+        damage = 0,
+        fireRate = 1.5,
+        range = 450,
+        projectile = "emp_wave",
+        disableTime = 2.0,
     },
 
-    juggernaut = {
-        tier = 3,
-        health = 700,
-        speed = 55,
-        mass = 4.5,
-        weapons = { "railgun", "crusher_fists" },
-        role = "heavy",
+    disruptor = {
+        type = "disrupt",
+        damage = 10,
+        fireRate = 0.6,
+        range = 480,
+        projectile = "disrupt_pulse",
+        impulse = 10,
     },
 
-    predator = {
-        tier = 3,
-        health = 480,
-        speed = 100,
-        mass = 3.0,
-        weapons = { "sniper_lance", "hunter_missile" },
-        role = "assassin",
+    scout_rifle = {
+        type = "sniper",
+        damage = 22,
+        fireRate = 0.7,
+        range = 700,
+        projectile = "sniper_bolt",
+        accuracy = 0.97,
+        impulse = 0,
     },
 
-    executioner = {
-        tier = 3,
-        health = 650,
-        speed = 75,
-        mass = 4.2,
-        weapons = { "execution_blade", "pulse_cannon" },
-        role = "elite",
+    explosive_core = {
+        type = "suicide",
+        damage = 120,
+        radius = 120,
+        fireRate = 999,
+        range = 0,
+        projectile = "self_destruct",
     },
 
     ---------------------------------------------------------
-    -- TIER 4
+    -- СРЕДНЕЕ ОРУЖИЕ (TIER 2)
     ---------------------------------------------------------
-    titanus_devastator = {
-        tier = 4,
-        health = 1200,
-        speed = 50,
-        mass = 8.0,
-        weapons = { "devastator_beam", "obliterator_missiles", "quake_hammer" },
-        role = "superheavy",
+
+    striker_blades = {
+        type = "melee",
+        damage = 40,
+        fireRate = 0.3,
+        range = 80,
+        projectile = "none",
+        impulse = 120,
+    },
+
+    shotgun_burst = {
+        type = "shotgun",
+        damage = 8,
+        pellets = 8,
+        fireRate = 0.9,
+        range = 350,
+        projectile = "shotgun_pellet",
+        impulse = 40,
+    },
+
+    phase_rifle = {
+        type = "phase",
+        damage = 30,
+        fireRate = 0.5,
+        range = 650,
+        projectile = "phase_bolt",
+        ignoreArmor = true,
+    },
+
+    ghost_missile = {
+        type = "missile",
+        damage = 45,
+        fireRate = 1.2,
+        range = 900,
+        projectile = "missile_ghost",
+        homing = true,
+        turnRate = 0.9,
+        impulse = 120,
+    },
+
+    artillery_cannon = {
+        type = "artillery",
+        damage = 80,
+        fireRate = 2.5,
+        range = 1400,
+        projectile = "shell_heavy",
+        arc = true,
+        impulse = 200,
+    },
+
+    cluster_launcher = {
+        type = "cluster",
+        damage = 20,
+        fireRate = 2.0,
+        range = 1200,
+        projectile = "cluster_shell",
+        subProjectiles = 6,
+    },
+
+    ---------------------------------------------------------
+    -- ТЯЖЁЛОЕ ОРУЖИЕ (TIER 3)
+    ---------------------------------------------------------
+
+    titan_shield = {
+        type = "shield",
+        damage = 0,
+        fireRate = 0.1,
+        range = 0,
+        projectile = "none",
+        shieldStrength = 300,
+    },
+
+    heavy_laser = {
+        type = "beam",
+        damage = 45,
+        fireRate = 0.4,
+        range = 900,
+        projectile = "laser_heavy",
+        impulse = 200, -- как лазер Birdies, толкает объекты
+    },
+
+    storm_missiles = {
+        type = "swarm",
+        damage = 18,
+        fireRate = 0.3,
+        range = 1100,
+        projectile = "missile_swarm",
+        homing = true,
+        swarmCount = 6,
+        turnRate = 1.2,
+    },
+
+    arc_blaster = {
+        type = "arc",
+        damage = 35,
+        fireRate = 0.6,
+        range = 500,
+        projectile = "arc_bolt",
+        chainTargets = 3,
+    },
+
+    railgun = {
+        type = "rail",
+        damage = 120,
+        fireRate = 3.0,
+        range = 1600,
+        projectile = "rail_slug",
+        ignoreArmor = true,
+        impulse = 300,
+    },
+
+    crusher_fists = {
+        type = "melee",
+        damage = 70,
+        fireRate = 0.5,
+        range = 100,
+        projectile = "none",
+        impulse = 200,
+    },
+
+    sniper_lance = {
+        type = "sniper",
+        damage = 90,
+        fireRate = 1.8,
+        range = 1800,
+        projectile = "lance_bolt",
+        accuracy = 0.99,
+        ignoreArmor = true,
+    },
+
+    hunter_missile = {
+        type = "missile",
+        damage = 60,
+        fireRate = 1.4,
+        range = 1300,
+        projectile = "missile_hunter",
+        homing = true,
+        turnRate = 1.4,
+    },
+
+    execution_blade = {
+        type = "melee",
+        damage = 100,
+        fireRate = 0.4,
+        range = 120,
+        projectile = "none",
+        impulse = 250,
+    },
+
+    pulse_cannon = {
+        type = "pulse",
+        damage = 55,
+        fireRate = 0.7,
+        range = 850,
+        projectile = "pulse_heavy",
+        impulse = 150,
+    },
+
+    ---------------------------------------------------------
+    -- СУПЕРТЯЖЁЛОЕ ОРУЖИЕ (TIER 4)
+    ---------------------------------------------------------
+
+    devastator_beam = {
+        type = "beam",
+        damage = 160,
+        fireRate = 1.2,
+        range = 2000,
+        projectile = "beam_devastator",
+        impulse = 600, -- как Birdies Repulsor Beam, но мощнее
+    },
+
+    obliterator_missiles = {
+        type = "swarm",
+        damage = 40,
+        fireRate = 0.5,
+        range = 1800,
+        projectile = "missile_obliterator",
+        homing = true,
+        swarmCount = 12,
+        turnRate = 1.6,
+    },
+
+    quake_hammer = {
+        type = "melee",
+        damage = 200,
+        fireRate = 1.0,
+        range = 150,
+        projectile = "none",
+        impulse = 800,
+        shockwaveRadius = 300,
     },
 }
 
-return Robots
-
+return Weapons
