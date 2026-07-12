@@ -9,6 +9,39 @@ function Weapons.FireMissile(robot, weaponName, projectileName, target)
     local projectile = Projectiles[projectileName]
     if not projectile then return end
 
+    local missile = {
+        x = robot.x,
+        y = robot.y,
+        vx = robot.dirX,
+        vy = robot.dirY,
+        speed = projectile.speed or 400,
+        turnRate = projectile.turnRate or 0.5,
+        projectileName = projectileName,
+        target = target,
+        hitRadius = projectile.hitRadius or 20,
+        energy = projectile.energy or 1.0,
+        inVoid = false,
+    }
+
+    function missile:Update(obstacles)
+        MissileAI.Update(self, self.target, obstacles)
+    end
+
+    function missile:CheckCollision()
+        return MissileAI.CheckCollision(self)
+    end
+
+    function missile:OnHit(hitTarget)
+        MissileAI.OnHit(self, hitTarget)
+    end
+
+    return missile
+end
+
+function Weapons.FireMissile(robot, weaponName, projectileName, target)
+    local projectile = Projectiles[projectileName]
+    if not projectile then return end
+
     -- создаём ракету
     local missile = {
         x = robot.x,
