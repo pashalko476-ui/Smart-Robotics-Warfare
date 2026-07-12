@@ -32,6 +32,7 @@ function CombatAI.FindBestTarget(self)
     self.target = bestTarget
     return bestTarget
 end
+CombatActions.UpdateMissiles(robot, obstacles)
 
 ---------------------------------------------------------
 -- 2. Стрельба по цели всеми подходящими орудиями
@@ -117,6 +118,10 @@ local damageResult = Weapons.ApplyDamage(weaponName, projectileName, target)
 if damageResult then
     target:ApplyDamage(damageResult.damage)
     target:ApplyImpulse(damageResult.impulse)
+end
+if weapon.type == "missile" or weapon.type == "swarm" then
+    local missile = Weapons.FireMissile(robot, weaponName, weapon.projectile, target)
+    robot:AddMissile(missile)
 end
 
 
