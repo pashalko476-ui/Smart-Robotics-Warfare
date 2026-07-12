@@ -9,6 +9,16 @@ local MissileAI = {}
 ---------------------------------------------------------
 -- НАВЕДЕНИЕ НА ЦЕЛЬ
 ---------------------------------------------------------
+function MissileAI.CheckCollision(missile)
+    -- простая проверка столкновения
+    if missile.target == nil then return false end
+
+    local dx = missile.target.x - missile.x
+    local dy = missile.target.y - missile.y
+    local dist = math.sqrt(dx*dx + dy*dy)
+
+    return dist < (missile.hitRadius or 20)
+end
 
 function MissileAI.SeekTarget(missile, target)
     if not target then return end
