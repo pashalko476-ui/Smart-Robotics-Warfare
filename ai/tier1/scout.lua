@@ -2,6 +2,7 @@
 
 local BaseAI = require(path .. "/ai/ai_base.lua")
 local ScoutAI = setmetatable({}, { __index = BaseAI })
+robot.missiles = {}
 
 function ScoutAI:Init(id)
     BaseAI.Init(self, id)
