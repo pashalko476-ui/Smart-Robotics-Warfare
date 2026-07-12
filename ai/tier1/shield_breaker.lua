@@ -2,6 +2,7 @@
 
 local BaseAI = require(path .. "/ai/ai_base.lua")
 local BreakerAI = setmetatable({}, { __index = BaseAI })
+robot.missiles = {}
 
 function BreakerAI:Init(id)
     BaseAI.Init(self, id)
